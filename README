@@ -1,0 +1,9 @@
+What is MarketMood?
+A real-time stock sentiment dashboard powered by Flask.
+Features:
+Track stock prices.
+Analyze sentiment of news articles.
+Tech Stack:
+Flask, Python, APIs.
+How to Run:
+Steps to clone and run the app locally.
