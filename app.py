@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request
+from transformers import pipeline
+
 import requests  # For making API calls
 
 app = Flask(__name__)
@@ -41,29 +43,51 @@ def get_stocks():
 @app.route('/news', methods=['GET'])
 def get_news():
     import requests
-    # Get the stock symbol from the query parameter, default to Tesla if not provided
+    # Get the stock symbol from the query parameter
     symbol = request.args.get('symbol', 'TSLA')
 
-    # NewsAPI URL and parameters
     api_url = "https://newsapi.org/v2/everything"
     params = {
-        "q": symbol,  # Search for news related to the stock symbol
-        "apiKey": "859fccdbd13149dfa82d5184254060f1"  # Replace with your actual API key
+        "q": symbol,
+        "apiKey": "859fccdbd13149dfa82d5184254060f1"
     }
 
     try:
         # Fetch news data
         response = requests.get(api_url, params=params)
-        response.raise_for_status()  # Raise exception for HTTP errors
+        response.raise_for_status()
         data = response.json()
-        
-        # Check for empty results
-        if not data.get("articles"):
-            return jsonify({"message": f"No news found for stock: {symbol}"}), 404
 
-        return jsonify(data)
+        # Analyze sentiment for each article
+        articles = data.get("articles", [])
+        for article in articles:
+            article_text = article.get("title", "")  # Analyze title
+            article["sentiment"] = analyze_sentiment(article_text)
+
+        # Simplify the response
+        simplified_articles = [
+            {"title": article["title"], "sentiment": article["sentiment"]}
+            for article in articles
+        ]
+
+        return jsonify({"stock": symbol, "articles": simplified_articles})
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Failed to fetch news data", "details": str(e)}), 500
+
+
+sentiment_analyzer = pipeline("sentiment-analysis")
+
+def analyze_sentiment(text):
+    """Analyze sentiment of a given text."""
+    result = sentiment_analyzer(text)[0]  # Get first result
+    sentiment = result['label']
+    # Convert Hugging Face labels to simplified ones
+    if sentiment == "POSITIVE":
+        return "positive"
+    elif sentiment == "NEGATIVE":
+        return "negative"
+    else:
+        return "neutral"
 
 if __name__ == '__main__':
     app.run(debug=True)
