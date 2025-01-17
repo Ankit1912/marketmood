@@ -2,49 +2,51 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const StockData = () => {
+const StockData = ({ symbol, assetType }) => {
   const [stockData, setStockData] = useState({});
-  const [symbol, setSymbol] = useState("TSLA");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (symbol) {
-      setIsLoading(true); // Start loading spinner
+    if (symbol && assetType) {
+      console.log("Fetching data for:", symbol, assetType);
+      setIsLoading(true);
+      setError(null);
+  
       axios
-        .get(`http://127.0.0.1:5000/stocks?symbol=${symbol}`)
+        .get(`http://127.0.0.1:5000/stocks?symbol=${symbol}&type=${assetType}`)
         .then((response) => {
-          console.log("Stock Data:", response.data); // Debugging log
-          setStockData(response.data);
-          setIsLoading(false); // Stop loading spinner
+          console.log("API Response:", response.data);
+          if (response.data.body) {
+            setStockData(response.data.body);
+          } else {
+            setError("No data available for this symbol.");
+          }
         })
-        .catch((error) => {
-          console.error("Error fetching stock data:", error);
-          setIsLoading(false); // Stop loading spinner on error
-        });
+        .catch((err) => {
+          console.error("Error fetching stock data:", err);
+          setError("Failed to fetch data. Please try again later.");
+        })
+        .finally(() => setIsLoading(false));
     }
-  }, [symbol]);
+  }, [symbol, assetType]);
+  
 
   return (
     <div>
-      <h2>Stock Data</h2>
-      <input
-        type="text"
-        value={symbol}
-        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-        placeholder="Enter stock symbol (e.g., TSLA)"
-      />
+      <h2>Data for {assetType.toUpperCase()}</h2>
       {isLoading ? (
         <ClipLoader color="#123abc" loading={isLoading} size={50} />
-      ) : stockData.body ? (
-        <ul>
-          <li><strong>Company Name:</strong> {stockData.body?.companyName || "N/A"}</li>
-          <li><strong>Exchange:</strong> {stockData.body?.exchange || "N/A"}</li>
-          <li><strong>Last Sale Price:</strong> {stockData.body?.primaryData?.lastSalePrice || "N/A"}</li>
-          <li><strong>Net Change:</strong> {stockData.body?.primaryData?.netChange || "N/A"}</li>
-          <li><strong>Percent Change:</strong> {stockData.body?.primaryData?.percentageChange || "N/A"}</li>
-        </ul>
+      ) : error ? (
+        <p style={{ color: "red" }}>{error}</p>
       ) : (
-        <p>No stock data available for this symbol.</p>
+        <ul>
+          <li><strong>Company Name:</strong> {stockData.companyName || "N/A"}</li>
+          <li><strong>Exchange:</strong> {stockData.exchange || "N/A"}</li>
+          <li><strong>Last Sale Price:</strong> {stockData.primaryData?.lastSalePrice || "N/A"}</li>
+          <li><strong>Net Change:</strong> {stockData.primaryData?.netChange || "N/A"}</li>
+          <li><strong>Percent Change:</strong> {stockData.primaryData?.percentageChange || "N/A"}</li>
+        </ul>
       )}
     </div>
   );
