@@ -38,7 +38,7 @@ const App = () => {
       </form>
 
       {/* Render Stock and News Components */}
-      <div className="data-display">
+      <div className="data-display fade-in">
         <div className="stock-section">
           <StockData symbol={submittedSymbol} assetType={submittedType} />
         </div>

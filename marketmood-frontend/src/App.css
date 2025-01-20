@@ -1,7 +1,7 @@
 /* General Styling */
 body {
   font-family: 'Roboto', Arial, sans-serif;
-  background: #1e1e2f; /* Dark background */
+  background: linear-gradient(to bottom, #1e1e2f, #2a2a40); /* Subtle gradient */
   color: #d1d5db; /* Light text */
   margin: 0;
   padding: 0;
@@ -16,14 +16,14 @@ body {
 h1 {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #61dafb; /* Bright blue for header text */
+  color: #61dafb; /* Subtle bright blue */
   margin-bottom: 30px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 p {
   font-size: 1.1rem;
-  color: #a1a1aa; /* Subtle light text */
+  color: #9ca3af; /* Muted gray for subtitle */
 }
 
 /* Search Form */
@@ -39,7 +39,7 @@ p {
 .search-form button {
   padding: 12px;
   font-size: 16px;
-  border: 1px solid #333; /* Dark border */
+  border: 1px solid #444; /* Subtle dark border */
   border-radius: 5px;
   outline: none;
   background-color: #292a3e; /* Dark background for input */
@@ -47,89 +47,108 @@ p {
 }
 
 .search-form button {
-  background-color: #0073e6;
+  background: rgba(58, 153, 217, 0.9); /* Sleek glass effect */
   color: white;
   cursor: pointer;
   border: none;
   font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle button shadow */
+  backdrop-filter: blur(10px); /* Glass effect */
 }
 
 .search-form button:hover {
-  background-color: #005bb5;
+  background-color: rgba(58, 153, 217, 1); /* Slightly more opaque */
+  transform: translateY(-2px); /* Hover lift */
 }
 
 /* Data Display Section */
 .data-display {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 20px;
   margin-top: 20px;
 }
 
+/* Card Sections */
 .stock-section,
 .news-section,
 .charts-section {
   flex: 1;
-  max-width: 30%;
   min-width: 300px;
-  height: 450px; /* Uniform height */
-  border: 1px solid #333; /* Subtle dark border */
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #292a3e; /* Card background */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Darker shadow for depth */
+  max-width: 32%;
+  height: 500px; /* Uniform height */
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05); /* Frosted glass effect */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Soft shadow */
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
 }
 
 .stock-section h2,
 .news-section h2,
 .charts-section h2 {
+  text-align: center; /* Center align the heading */
   font-size: 1.5rem;
-  margin-bottom: 15px;
   color: #61dafb;
-  text-align: left;
+  margin-bottom: 20px;
 }
 
+/* Align content to the left for stock and news sections */
 .stock-section ul,
 .news-section ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
+  text-align: left; /* Ensures all content is left-aligned */
 }
 
-/* Stock Section */
-.stock-section .data-item {
-  margin-bottom: 10px;
-  font-size: 1rem;
+.stock-section li,
+.news-section li,
+.stock-section .data-item,
+.news-section .news-item {
+  text-align: left; /* Ensures individual items are left-aligned */
+  line-height: 1.6; /* Adds better spacing between lines */
+  margin-bottom: 8px; /* Adds some space between items */
 }
 
-.stock-section .data-item span {
-  font-weight: bold;
-  color: #d1d5db;
+/* Optional: Add padding to the left for a polished look */
+.stock-section ul,
+.news-section ul {
+  padding-left: 15px; /* Adds a bit of padding to the left */
+}
+
+/* Gradient Borders */
+.stock-section::before,
+.news-section::before,
+.charts-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  pointer-events: none;
 }
 
 /* Scrollable News Section */
 .news-section {
-  overflow-y: auto; /* Enable vertical scrolling */
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #61dafb #292a3e; /* Custom scrollbar colors */
+  overflow-y: auto;
 }
 
 .news-section::-webkit-scrollbar {
   width: 8px;
 }
 
-.news-section::-webkit-scrollbar-track {
-  background: #292a3e;
-}
-
 .news-section::-webkit-scrollbar-thumb {
-  background-color: #61dafb;
+  background-color: rgba(58, 153, 217, 0.8); /* Subtle blue scrollbar */
   border-radius: 5px;
 }
 
+/* News Items */
 .news-item {
   margin-bottom: 15px;
   font-size: 0.9rem;
@@ -163,15 +182,30 @@ p {
 }
 
 /* Chart Section */
-.charts-section {
-  overflow: hidden;
-}
-
 .charts-section canvas {
-  max-height: 350px; /* Limit chart height */
+  max-height: 350px;
+  margin: auto;
 }
 
-/* Mobile Responsiveness */
+/* Hover Effects */
+button:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.stock-section:hover,
+.news-section:hover,
+.charts-section:hover {
+  transform: translateY(-5px); /* Lift effect */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Enhanced shadow */
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .data-display {
     flex-direction: column;
@@ -182,6 +216,6 @@ p {
   .news-section,
   .charts-section {
     max-width: 100%;
-    height: auto; /* Adjust for smaller screens */
+    height: auto;
   }
 }
